@@ -38,7 +38,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
     return <Badge variant="default" className="bg-green-500">In Stock</Badge>;
   };
 
-  // Calculate profit margin percentage
+ 
   const getProfitMargin = (item: InventoryItem) => {
     if (item.stock_cost === 0) return 0;
     return ((item.potential_profit / item.stock_cost) * 100).toFixed(1);
@@ -59,7 +59,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
             <TableHead className="text-center">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className='tabular-nums'>
           {items.length === 0 ? (
             <TableRow>
               <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
@@ -75,7 +75,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1 text-sm">
-                    {/* Mobile: Horizontal compact view */}
+                   
                     <div className="flex items-center justify-center gap-2 md:hidden">
                       <span className="font-medium">{item.packs_in_stock}p</span>
                       <span className="text-muted-foreground">•</span>
@@ -85,7 +85,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
                       {item.total_pieces} total
                     </Badge>
 
-                    {/* Desktop: Original vertical layout */}
+                   
                     <div className="hidden md:flex md:flex-col md:items-center">
                       <div className="flex items-center gap-1">
                         <Package size={14} className="text-muted-foreground" />

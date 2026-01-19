@@ -26,7 +26,7 @@ const InventoryManagement: React.FC = () => {
     item: null,
   });
 
-  // Use hooks
+ 
   const { data: inventory = [], isLoading } = useInventory();
   const { data: todayProfit = { total_profit: 0 } } = useTodayProfit();
   const { data: productProfits = [] } = useProductProfits();
@@ -67,7 +67,7 @@ const InventoryManagement: React.FC = () => {
       
       <div className="border-b bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold tracking-tight">Inventory Management</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Blessing's Inventory</h1>
           <p className="text-muted-foreground mt-1">Track stock, sales, and profits in real-time</p>
         </div>
       </div>
@@ -104,12 +104,12 @@ const InventoryManagement: React.FC = () => {
       
         <Card>
           <Tabs defaultValue="inventory" className="w-full">
-            <div className="border-b px-6">
-              <TabsList className="h-12">
-                <TabsTrigger value="inventory" className="data-[state=active]:bg-background">
+            <div className="border-b py-3 px-6">
+              <TabsList className="h-11  rounded-2xl">
+                <TabsTrigger value="inventory" className="data-[state=active]:bg-background data-[state=active]:text-black text-gray-400 transition-colors ease-in duration-300 px-3 rounded-xl">
                   Inventory
                 </TabsTrigger>
-                <TabsTrigger value="profits" className="data-[state=active]:bg-background">
+                <TabsTrigger value="profits" className="data-[state=active]:bg-background data-[state=active]:text-black text-gray-400 duration-300 px-3 transition-colors ease-in rounded-xl">
                   Product Profits
                 </TabsTrigger>
               </TabsList>

@@ -1,7 +1,7 @@
 import type { InventoryItem, ProductProfit, RestockInput, SaleInput, TodayProfit } from '@/types/inventory.types';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE,
@@ -35,5 +35,15 @@ export const inventoryApi = {
   restockItem: async (restockData: RestockInput): Promise<InventoryItem> => {
     const { data } = await axiosInstance.post<InventoryItem>('/inventory/restock', restockData);
     return data;
+  },
+
+  checkLowStock: async () => {
+    const { data } = await axiosInstance.post('/notifications/check-stock');
+    return data;
+  },
+
+  getLowStockItems: async (): Promise<InventoryItem[]> => {
+    const { data } = await axiosInstance.get('/notifications/low-stock');
+    return data.items;
   },
 };

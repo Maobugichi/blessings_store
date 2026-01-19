@@ -24,6 +24,7 @@ export interface ProductProfit {
   name: string;
   total_profit: number;
   total_units_sold: number;
+  sale_date:any
 }
 
 export interface SaleInput {

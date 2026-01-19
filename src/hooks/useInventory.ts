@@ -1,5 +1,6 @@
 import { inventoryApi } from '@/services/inventory.service';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from "sonner";
 
 export const useInventory = () => {
   return useQuery({
@@ -24,26 +25,45 @@ export const useProductProfits = () => {
   });
 };
 
+
+
 export const useSaleMutation = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: inventoryApi.processSale,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['inventory'] });
       queryClient.invalidateQueries({ queryKey: ['todayProfit'] });
       queryClient.invalidateQueries({ queryKey: ['productProfits'] });
+      
+      toast.success("Sale processed successfully", {
+        description: `Profit: ₦${data.profit.toFixed(2)}`
+      });
     },
+    onError: (error) => {
+      toast.error("Failed to process sale", {
+        description: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   });
 };
-
 export const useRestockMutation = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
     mutationFn: inventoryApi.restockItem,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data)
       queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      toast.success("Sale processed successfully", {
+        description: `updated ${data.name}'s stock `
+      });
     },
+    onError: (error) => {
+      toast.error("Failed to process sale", {
+        description: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   });
 };

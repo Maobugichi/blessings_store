@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/table';
 import type { ProductProfit } from '@/types/inventory.types';
 import { Badge } from './ui/badge';
+import { formatDate } from '@/utils/dateFormatter';
 
 
 export const ProfitTable: React.FC<{ products: ProductProfit[] }> = ({ products }) => {
@@ -27,6 +28,7 @@ export const ProfitTable: React.FC<{ products: ProductProfit[] }> = ({ products 
             <TableHead>Product</TableHead>
             <TableHead className="text-right">Units Sold</TableHead>
             <TableHead className="text-right">Total Profit</TableHead>
+             <TableHead className="text-right">Sale Date</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -46,6 +48,7 @@ export const ProfitTable: React.FC<{ products: ProductProfit[] }> = ({ products 
                 <TableCell className="text-right font-bold text-green-600">
                   {formatCurrency(product.total_profit)}
                 </TableCell>
+                <TableCell className="font-medium text-right">{formatDate(product.sale_date)}</TableCell>
               </TableRow>
             ))
           )}
