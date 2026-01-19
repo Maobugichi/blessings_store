@@ -28,20 +28,22 @@ export const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon: Icon, 
             <p className="text-sm font-medium text-muted-foreground  tracking-normal leading-tight">{title}</p>
             <p
               onClick={() => setShowBalance(!showBalance)}
-              className="text-3xl font-mono tabular-nums font-semibold tracking-normal  leading-tight text-left transition flex items-center gap-2 group -ml-1 pl-1 pr-2 py-1 rounded hover:bg-gray-50 active:bg-gray-100"
+              className="text-3xl w-full font-mono tabular-nums font-semibold tracking-normal  leading-tight text-left transition flex items-center gap-2 group -ml-1 pl-1 pr-2 py-1 rounded hover:bg-gray-50 active:bg-gray-100 relative "
               
             >
               {showBalance ? (
                 value
               ) : (
-                <>₦ <span className="h-6 text-gray-400 tracking-wider">*****</span></>
+                <>₦ <span className="relative top-1 text-gray-400 tracking-wider">*****</span></>
               )}
              
+             <span className="absolute right-2 top-1/2 -translate-y-1/2">
               {showBalance ? (
-                <HiEye className="text-gray-400 md:opacity-0 md:group-hover:opacity-100 transition shrink-0" size={18} />
+                <HiEye className="text-gray-400 md:opacity-0 md:group-hover:opacity-100 transition" size={18} />
               ) : (
-                <HiEyeOff className="text-gray-400 md:opacity-0 md:group-hover:opacity-100 transition shrink-0" size={18} />
+                <HiEyeOff className="text-gray-400 md:opacity-0 md:group-hover:opacity-100 transition" size={18} />
               )}
+            </span>
             </p>
           </div>
           

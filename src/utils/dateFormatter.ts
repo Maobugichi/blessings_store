@@ -13,9 +13,7 @@ export const formatDate = (dateString: string) => {
   }).format(date);
 };
 
-/**
- * Format date only (no time): "Jan 19, 2026"
- */
+
 export const formatDateOnly = (dateString: string) => {
   const date = new Date(dateString);
   
@@ -27,9 +25,7 @@ export const formatDateOnly = (dateString: string) => {
   }).format(date);
 };
 
-/**
- * Format to Nigerian long format: "Sunday, January 19, 2026"
- */
+
 export const formatDateLong = (dateString: string) => {
   const date = new Date(dateString);
   
@@ -42,9 +38,7 @@ export const formatDateLong = (dateString: string) => {
   }).format(date);
 };
 
-/**
- * Format with relative time: "Today", "Yesterday", "2 days ago", or date
- */
+
 export const formatDateRelative = (dateString: string) => {
   const date = new Date(dateString);
   const now = new Date();
@@ -66,9 +60,7 @@ export const formatDateRelative = (dateString: string) => {
   return formatDateOnly(dateString);
 };
 
-/**
- * Format to DD/MM/YYYY (common Nigerian format)
- */
+
 export const formatDateSlash = (dateString: string) => {
   const date = new Date(dateString);
   
@@ -79,9 +71,7 @@ export const formatDateSlash = (dateString: string) => {
   return `${day}/${month}/${year}`;
 };
 
-/**
- * Format time only: "11:30 PM"
- */
+
 export const formatTimeOnly = (dateString: string) => {
   const date = new Date(dateString);
   
