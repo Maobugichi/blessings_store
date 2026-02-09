@@ -18,7 +18,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import type { InventoryItem, SaleInput } from '@/types/inventory.types';
 
 interface SaleModalProps {

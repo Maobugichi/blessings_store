@@ -8,13 +8,14 @@ import {
 } from "@phosphor-icons/react";
 
 import { useState } from 'react';
-import { StatsCard } from '../statsCard';
+import { StatsCard } from '../inventoryDash/statsCard';
 import { Card } from '../ui/card';
-import { InventoryTable } from '../inventoryTable';
+import { InventoryTable } from '../inventoryDash/inventoryTable';
 import { ProfitTable } from '../profitTable';
-import { SaleModal } from '../saleModal';
-import { RestockModal } from '../restockModal';
+import { SaleModal } from '../inventoryDash/saleModal';
+import { RestockModal } from '../inventoryDash/restockModal';
 import { Spinner } from '../ui/spinner';
+import Header from '../inventoryDash/inventoryHeader';
 
 const InventoryManagement: React.FC = () => {
   const [saleModal, setSaleModal] = useState<{ open: boolean; item: InventoryItem | null }>({
@@ -65,13 +66,8 @@ const InventoryManagement: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       
-      <div className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold tracking-tight">Blessing's Inventory</h1>
-          <p className="text-muted-foreground mt-1">Track stock, sales, and profits in real-time</p>
-        </div>
-      </div>
-
+     
+      <Header/>
      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
