@@ -16,6 +16,8 @@ import { SaleModal } from '../inventoryDash/saleModal';
 import { RestockModal } from '../inventoryDash/restockModal';
 import { Spinner } from '../ui/spinner';
 import Header from '../inventoryDash/inventoryHeader';
+import { AddItemModal } from '../inventoryDash/addItemModal';
+import { Button } from '../ui/button';
 
 const InventoryManagement: React.FC = () => {
   const [saleModal, setSaleModal] = useState<{ open: boolean; item: InventoryItem | null }>({
@@ -26,6 +28,11 @@ const InventoryManagement: React.FC = () => {
     open: false,
     item: null,
   });
+  // add state
+const [addModal, setAddModal] = useState(false);
+
+// pass to Header or add a button wherever fits
+
 
  
   const { data: inventory = [], isLoading } = useInventory();
@@ -97,8 +104,9 @@ const InventoryManagement: React.FC = () => {
           />
         </div>
 
-      
+        <Button onClick={() => setAddModal(true)}>Add Item</Button>
         <Card>
+
           <Tabs defaultValue="inventory" className="w-full">
             <div className="border-b py-3 px-6">
               <TabsList className="h-11  rounded-2xl">
@@ -130,6 +138,8 @@ const InventoryManagement: React.FC = () => {
               <ProfitTable products={productProfits} />
             </TabsContent>
           </Tabs>
+
+          
         </Card>
       </div>
 
@@ -157,6 +167,10 @@ const InventoryManagement: React.FC = () => {
         isLoading={restockMutation.isPending}
         error={restockMutation.error}
       />
+      
+
+
+    <AddItemModal open={addModal} onClose={() => setAddModal(false)} />
     </div>
   );
 };

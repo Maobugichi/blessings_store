@@ -56,11 +56,11 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
     onSuccess: (data) => {
-     
+      console.log(data)
       queryClient.setQueryData(authKeys.me, { admin: data.admin });
       
       // Redirect to dashboard
-      navigate('/dashboard');
+      navigate('/inventory');
     },
   });
 };
@@ -89,7 +89,7 @@ export const useLogout = () => {
 
 
 export const useInviteCodes = (showUsed: boolean = false) => {
-   const token = localStorage.getItem('adminToken');
+  const token = authApi.getToken();
   return useQuery({
     queryKey: authKeys.invites(showUsed),
     queryFn: () => inviteApi.getAll(showUsed),

@@ -24,7 +24,7 @@ export interface ProductProfit {
   name: string;
   total_profit: number;
   total_units_sold: number;
-  sale_date:any
+  sale_date:string;
 }
 
 export interface SaleInput {
@@ -39,4 +39,16 @@ export interface RestockInput {
   piecesAdded?: number;
   purchasePricePack?: number;
   sellingPricePack?: number;
+}
+
+export interface CreateInventoryInput {
+  name: string;
+  pack_size: number;
+  packs_in_stock: number;
+  pieces_in_stock: number;
+  purchase_price_pack?: number | null;
+  purchase_price_piece?: number | null;
+  selling_price_pack?: number | null;
+  selling_price_piece?: number | null;
+  low_stock_threshold?: number | null;
 }

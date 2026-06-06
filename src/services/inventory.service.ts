@@ -1,12 +1,12 @@
 import apiClient from '@/config/axios.config';
-import type { InventoryItem, ProductProfit, RestockInput, SaleInput, TodayProfit } from '@/types/inventory.types';
+import type { CreateInventoryInput, InventoryItem, ProductProfit, RestockInput, SaleInput, TodayProfit } from '@/types/inventory.types';
 
 
 
 export const inventoryApi = {
   getInventory: async (): Promise<InventoryItem[]> => {
-    const { data } = await apiClient.get<InventoryItem[]>('/inventory');
-    return data;
+    const { data } = await apiClient.get<{ items: InventoryItem[] }>('/inventory');
+    return data.items;
   },
   
   getTodayProfit: async (): Promise<TodayProfit> => {
@@ -37,5 +37,10 @@ export const inventoryApi = {
   getLowStockItems: async (): Promise<InventoryItem[]> => {
     const { data } = await apiClient.get('/notifications/low-stock');
     return data.items;
+  },
+
+  createItem: async (data: CreateInventoryInput): Promise<{ item: InventoryItem }> => {
+    const response = await apiClient.post<{ item: InventoryItem }>('/inventory', data);
+    return response.data;
   },
 };

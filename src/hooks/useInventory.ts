@@ -67,3 +67,22 @@ export const useRestockMutation = () => {
     }
   });
 };
+
+export const useCreateInventoryItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: inventoryApi.createItem,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      toast.success('Item added', {
+        description: `${data.item.name} added to inventory`,
+      });
+    },
+    onError: (error) => {
+      toast.error('Failed to add item', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
+    },
+  });
+};

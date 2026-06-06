@@ -32,6 +32,7 @@ export const authApi = {
             data
         );
 
+        console.log(response)
         if (response.data.token) {
             localStorage.setItem('adminToken', response.data.token);
         }
