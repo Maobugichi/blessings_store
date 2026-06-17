@@ -29,7 +29,7 @@ export interface ProductProfit {
 
 export interface SaleInput {
   inventoryId: number;
-  saleType: 'pack' | 'piece';
+  saleType: 'pack' | 'piece' | 'half_pack';
   quantity: number;
 }
 
