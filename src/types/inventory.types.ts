@@ -52,3 +52,55 @@ export interface CreateInventoryInput {
   selling_price_piece?: number | null;
   low_stock_threshold?: number | null;
 }
+
+
+export interface DamageInput {
+  inventoryId: number;
+  damageType: 'piece' | 'pack_open';
+  quantity: number;
+  reason?: 'leakage' | 'expired' | 'breakage' | 'theft' | 'other';
+}
+
+export interface DamageResult {
+  success: boolean;
+  lossValue: number;
+  message: string;
+}
+
+export interface MergedWeeklyRow {
+  week_start: string;
+  week_end: string;
+  name: string;
+  total_profit: number;
+  total_units_sold: number;
+  total_loss: number;
+  total_units_damaged: number;
+  net_profit: number;
+}
+
+export interface ProfitSummary {
+  total_sales_profit: number;
+  total_damage_loss: number;
+  net_profit: number;
+}
+
+export interface WeeklyDamage {
+  week_start: string;
+  week_end: string;
+  name: string;
+  total_loss: number;
+  total_units_damaged: number;
+}
+
+export interface DateRange {
+  startDate: string;
+  endDate: string;
+}
+
+export interface WeeklyProductProfit {
+  week_start: string;
+  week_end: string;
+  name: string;
+  total_profit: number;
+  total_units_sold: number;
+}

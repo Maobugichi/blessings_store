@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Package, TrendingUp } from 'lucide-react';
+import { ShoppingCart, Package, TrendingUp, AlertTriangle } from 'lucide-react';
 import type { InventoryItem } from '@/types/inventory.types';
 import {
   Tooltip,
@@ -21,9 +21,10 @@ interface InventoryTableProps {
   items: InventoryItem[];
   onSale: (item: InventoryItem) => void;
   onRestock: (item: InventoryItem) => void;
+  onDamage: (item: InventoryItem) => void;
 }
 
-export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, onRestock }) => {
+export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, onRestock, onDamage }) => {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
@@ -38,7 +39,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
     return <Badge variant="default" className="bg-green-500">In Stock</Badge>;
   };
 
- 
+
   const getProfitMargin = (item: InventoryItem) => {
     if (item.stock_cost === 0) return 0;
     return ((item.potential_profit / item.stock_cost) * 100).toFixed(1);
@@ -75,7 +76,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1 text-sm">
-                   
+
                     <div className="flex items-center justify-center gap-2 md:hidden">
                       <span className="font-medium">{item.packs_in_stock}p</span>
                       <span className="text-muted-foreground">•</span>
@@ -85,7 +86,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
                       {item.total_pieces} total
                     </Badge>
 
-                   
+
                     <div className="hidden md:flex md:flex-col md:items-center">
                       <div className="flex items-center gap-1">
                         <Package size={14} className="text-muted-foreground" />
@@ -155,6 +156,16 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({ items, onSale, o
                     >
                       <Package size={14} className="mr-1" />
                       Restock
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => onDamage(item)}
+                      disabled={item.total_pieces === 0 && item.packs_in_stock === 0}
+                      className="text-red-600 border-red-200 hover:bg-red-50"
+                    >
+                      <AlertTriangle size={14} className="mr-1" />
+                      Damage
                     </Button>
                   </div>
                 </TableCell>

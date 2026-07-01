@@ -65,7 +65,7 @@ export const SaleModal: React.FC<SaleModalProps> = ({
 
   const handleTypeChange = (v: string) => {
     setSaleType(v as SaleType);
-    setQuantity(1); // reset quantity on type switch to avoid stale max violations
+    setQuantity(1); 
   };
 
   return (

@@ -1,4 +1,5 @@
 import { inventoryApi } from '@/services/inventory.service';
+import type { DateRange } from '@/types/inventory.types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from "sonner";
 
@@ -84,5 +85,59 @@ export const useCreateInventoryItem = () => {
         description: error instanceof Error ? error.message : 'Unknown error',
       });
     },
+  });
+};
+
+export const useDamageMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: inventoryApi.processDamage,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['inventory'] });
+      queryClient.invalidateQueries({ queryKey: ['todayProfit'] });
+      queryClient.invalidateQueries({ queryKey: ['productProfits'] });
+
+      toast.success("Damage recorded", {
+        description: `Loss: ₦${data.lossValue.toFixed(2)}`
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to record damage", {
+        description: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+};
+
+export const useMergedWeekly = (range: DateRange) => {
+  return useQuery({
+    queryKey: ['mergedWeekly', range.startDate, range.endDate],
+    queryFn: () => inventoryApi.getMergedWeekly(range),
+    enabled: !!range.startDate && !!range.endDate,
+  });
+};
+
+export const useDamagesByWeek = (range: DateRange) => {
+  return useQuery({
+    queryKey: ['damagesByWeek', range.startDate, range.endDate],
+    queryFn: () => inventoryApi.getDamagesByWeek(range),
+    enabled: !!range.startDate && !!range.endDate,
+  });
+};
+
+export const useProfitByWeek = (range: DateRange) => {
+  return useQuery({
+    queryKey: ['profitByWeek', range.startDate, range.endDate],
+    queryFn: () => inventoryApi.getProfitByWeek(range),
+    enabled: !!range.startDate && !!range.endDate,
+  });
+};
+
+export const useProfitSummary = (range: DateRange) => {
+  return useQuery({
+    queryKey: ['profitSummary', range.startDate, range.endDate],
+    queryFn: () => inventoryApi.getProfitSummary(range),
+    enabled: !!range.startDate && !!range.endDate,
   });
 };
