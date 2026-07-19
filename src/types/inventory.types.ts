@@ -9,11 +9,11 @@ export interface InventoryItem {
   purchase_price_pack: number;
   purchase_price_piece: number;
   total_pieces: number;
-  
 
-  stock_value: number;      
-  stock_cost: number;        
-  potential_profit: number;  
+
+  stock_value: number;
+  stock_cost: number;
+  potential_profit: number;
 }
 
 export interface TodayProfit {
@@ -24,13 +24,19 @@ export interface ProductProfit {
   name: string;
   total_profit: number;
   total_units_sold: number;
-  sale_date:string;
+  sale_date: string;
 }
 
 export interface SaleInput {
   inventoryId: number;
   saleType: 'pack' | 'piece' | 'half_pack';
   quantity: number;
+  // Plain "YYYY-MM-DD". Only send this when backdating — omit it for a
+  // normal real-time sale so the backend uses NOW() as before.
+  saleDate?: string;
+  // Manual price override for this sale only; does not change the
+  // item's configured selling price.
+  overrideSellingPrice?: number;
 }
 
 export interface RestockInput {

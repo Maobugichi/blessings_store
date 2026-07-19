@@ -28,11 +28,28 @@ interface SaleModalProps {
 const fmt = (n: number) =>
   new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(n);
 
+// Local calendar date as "YYYY-MM-DD", using local Date getters — NOT
+// toISOString(), which converts to UTC and can shift the date by a day
+// depending on the user's timezone offset. See dateFormatter.ts for the
+// same pattern used on the display side.
+const getTodayDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export const SaleModal: React.FC<SaleModalProps> = ({
   open, item, onClose, onSubmit, isLoading, error,
 }) => {
+  const today = getTodayDateString();
+
   const [saleType, setSaleType] = useState<SaleType>('piece');
   const [quantity, setQuantity] = useState(1);
+  const [saleDate, setSaleDate] = useState(today);
+  const [showOverride, setShowOverride] = useState(false);
+  const [overridePrice, setOverridePrice] = useState('');
 
   const resolvePrice = (): number => {
     if (!item) return 0;
@@ -54,22 +71,62 @@ export const SaleModal: React.FC<SaleModalProps> = ({
     return 'piece';
   };
 
-  const price     = resolvePrice();
-  const maxQty    = resolveMax();
-  const totalPrice = price * quantity;
+  const price      = resolvePrice();
+  const maxQty     = resolveMax();
+  const effectivePrice = showOverride && overridePrice !== '' ? Number(overridePrice) : price;
+  const totalPrice = effectivePrice * quantity;
+
+  const isBackdated = saleDate !== today;
+  const overrideValid = !showOverride || (overridePrice !== '' && Number(overridePrice) > 0);
+  const canSubmit = quantity >= 1 && quantity <= maxQty && overrideValid;
+
+  const resetExtras = () => {
+    setSaleDate(today);
+    setShowOverride(false);
+    setOverridePrice('');
+  };
+
+  const handleClose = () => {
+    resetExtras();
+    onClose();
+  };
 
   const handleSubmit = () => {
-    if (!item) return;
-    onSubmit({ inventoryId: item.id, saleType, quantity });
+    if (!item || !canSubmit) return;
+
+    const data: SaleInput = {
+      inventoryId: item.id,
+      saleType,
+      quantity,
+      // Only send saleDate when actually backdated — an untouched picker
+      // stays on today's date and the sale is submitted as real-time,
+      // same as before this feature existed.
+      ...(isBackdated ? { saleDate } : {}),
+      ...(showOverride && overridePrice !== ''
+        ? { overrideSellingPrice: Number(overridePrice) }
+        : {}),
+    };
+
+    onSubmit(data);
   };
 
   const handleTypeChange = (v: string) => {
     setSaleType(v as SaleType);
-    setQuantity(1); 
+    setQuantity(1);
+  };
+
+  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value;
+    if (raw === '') {
+      setQuantity(0);
+      return;
+    }
+    const parsed = parseInt(raw, 10);
+    setQuantity(Number.isNaN(parsed) ? 0 : parsed);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Process Sale</DialogTitle>
@@ -107,18 +164,64 @@ export const SaleModal: React.FC<SaleModalProps> = ({
               type="number"
               min="1"
               max={maxQty}
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+              value={quantity === 0 ? '' : quantity}
+              onChange={handleQuantityChange}
             />
             <p className="text-sm text-muted-foreground">
               Available: {maxQty} {resolveLabel()}s
             </p>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="sale-date">Sale Date</Label>
+            <Input
+              id="sale-date"
+              type="date"
+              max={today}
+              value={saleDate}
+              onChange={(e) => setSaleDate(e.target.value)}
+            />
+            {isBackdated && (
+              <p className="text-sm text-yellow-600">
+                Backdating this sale to {saleDate}.
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                setShowOverride((v) => !v);
+                setOverridePrice('');
+              }}
+              className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
+            >
+              {showOverride ? 'Remove price override' : 'Adjust price for this sale?'}
+            </button>
+
+            {showOverride && (
+              <div className="space-y-1">
+                <Label htmlFor="override-price">
+                  Override price per {resolveLabel()}
+                </Label>
+                <Input
+                  id="override-price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder={String(price)}
+                  value={overridePrice}
+                  onChange={(e) => setOverridePrice(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+
           <div className="rounded-lg bg-muted p-4 space-y-2">
             <div className="flex justify-between text-sm">
               <span>Price per {resolveLabel()}:</span>
-              <span className="font-medium">{fmt(price)}</span>
+              <span className="font-medium">{fmt(effectivePrice)}</span>
             </div>
             <div className="flex justify-between text-lg font-bold">
               <span>Total:</span>
@@ -128,12 +231,12 @@ export const SaleModal: React.FC<SaleModalProps> = ({
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={handleClose} disabled={isLoading}>
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isLoading || quantity < 1 || quantity > maxQty}
+            disabled={isLoading || !canSubmit}
             className="bg-green-600 hover:bg-green-700"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
