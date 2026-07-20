@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/table';
 import type { ProductProfit } from '@/types/inventory.types';
 import { Badge } from './ui/badge';
-import { formatDate } from '@/utils/dateFormatter';
+import { formatDateOnly } from '@/utils/dateFormatter';
 
 
 export const ProfitTable: React.FC<{ products: ProductProfit[] }> = ({ products }) => {
@@ -48,7 +48,11 @@ export const ProfitTable: React.FC<{ products: ProductProfit[] }> = ({ products 
                 <TableCell className="text-right font-bold text-green-600">
                   {formatCurrency(product.total_profit)}
                 </TableCell>
-                <TableCell className="font-medium text-right">{formatDate(product.sale_date)}</TableCell>
+                {/* This row is a day-level aggregate (SUM across all of a
+                    product's sales that day), not one sale — so a time
+                    component here would be meaningless even if accurate.
+                    formatDateOnly, not formatDate. */}
+                <TableCell className="font-medium text-right">{formatDateOnly(product.sale_date)}</TableCell>
               </TableRow>
             ))
           )}

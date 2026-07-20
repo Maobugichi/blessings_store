@@ -73,8 +73,12 @@ export const SaleModal: React.FC<SaleModalProps> = ({
 
   const price      = resolvePrice();
   const maxQty     = resolveMax();
-  const effectivePrice = showOverride && overridePrice !== '' ? Number(overridePrice) : price;
-  const totalPrice = effectivePrice * quantity;
+  const normalTotal = price * quantity;
+  // overridePrice is what the customer actually paid in total (e.g. 900
+  // for 2 units) — not a per-unit price the cashier would have to
+  // calculate themselves.
+  const totalPrice = showOverride && overridePrice !== '' ? Number(overridePrice) : normalTotal;
+  const effectivePrice = quantity > 0 ? totalPrice / quantity : 0;
 
   const isBackdated = saleDate !== today;
   const overrideValid = !showOverride || (overridePrice !== '' && Number(overridePrice) > 0);
@@ -103,7 +107,7 @@ export const SaleModal: React.FC<SaleModalProps> = ({
       // same as before this feature existed.
       ...(isBackdated ? { saleDate } : {}),
       ...(showOverride && overridePrice !== ''
-        ? { overrideSellingPrice: Number(overridePrice) }
+        ? { overrideTotalPrice: Number(overridePrice) }
         : {}),
     };
 
@@ -197,23 +201,26 @@ export const SaleModal: React.FC<SaleModalProps> = ({
               }}
               className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
             >
-              {showOverride ? 'Remove price override' : 'Adjust price for this sale?'}
+              {showOverride ? 'Remove price override' : 'Adjust total price for this sale?'}
             </button>
 
             {showOverride && (
               <div className="space-y-1">
                 <Label htmlFor="override-price">
-                  Override price per {resolveLabel()}
+                  Total price for this sale
                 </Label>
                 <Input
                   id="override-price"
                   type="number"
                   min="0"
                   step="0.01"
-                  placeholder={String(price)}
+                  placeholder={String(normalTotal)}
                   value={overridePrice}
                   onChange={(e) => setOverridePrice(e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground">
+                  Normal total: {fmt(normalTotal)}
+                </p>
               </div>
             )}
           </div>

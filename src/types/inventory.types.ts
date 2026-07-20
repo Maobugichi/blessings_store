@@ -34,9 +34,9 @@ export interface SaleInput {
   // Plain "YYYY-MM-DD". Only send this when backdating — omit it for a
   // normal real-time sale so the backend uses NOW() as before.
   saleDate?: string;
-  // Manual price override for this sale only; does not change the
-  // item's configured selling price.
-  overrideSellingPrice?: number;
+  // Total price for the WHOLE line item (e.g. 900 for 2 units), not a
+  // per-unit price. Does not change the item's configured selling price.
+  overrideTotalPrice?: number;
 }
 
 export interface RestockInput {
